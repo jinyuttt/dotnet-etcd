@@ -1,204 +1,138 @@
-﻿using Etcdserverpb;
-using Grpc.Core;
-using System;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using Etcdserverpb;
 
 namespace dotnet_etcd
 {
     public partial class EtcdClient : IDisposable
     {
         /// <summary>
-        ///  MemberAdd adds a member into the cluster
+        /// MemberAdd adds a member into the cluster
         /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public MemberAddResponse MemberAdd(MemberAddRequest request)
+        /// <param name="request">The request to send to the server.</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
+        /// <returns>The response received from the server.</returns>
+        public MemberAddResponse MemberAdd(MemberAddRequest request, Grpc.Core.Metadata headers = null,
+            DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            MemberAddResponse response = new MemberAddResponse();
-            try
-            {
-                response = _clusterClient.MemberAdd(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return CallEtcd((connection) => connection.clusterClient
+                .MemberAdd(request, headers, deadline, cancellationToken));
         }
 
         /// <summary>
-        ///  MemberAddAsync adds a member into the cluster in async
+        /// MemberAddAsync adds a member into the cluster in async
         /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public async Task<MemberAddResponse> MemberAddAsync(MemberAddRequest request)
+        /// <param name="request">The request to send to the server.</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
+        /// <returns>The response received from the server.</returns>
+        public async Task<MemberAddResponse> MemberAddAsync(MemberAddRequest request, Grpc.Core.Metadata headers = null,
+            DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            MemberAddResponse response = new MemberAddResponse();
-            try
-            {
-                response = await _clusterClient.MemberAddAsync(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return await CallEtcdAsync(async (connection) => await connection.clusterClient
+                .MemberAddAsync(request, headers, deadline, cancellationToken));
         }
 
         /// <summary>
         /// MemberRemove removes an existing member from the cluster
         /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public MemberRemoveResponse MemberRemove(MemberRemoveRequest request)
+        /// <param name="request">The request to send to the server.</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
+        /// <returns>The response received from the server.</returns>
+        public MemberRemoveResponse MemberRemove(MemberRemoveRequest request, Grpc.Core.Metadata headers = null,
+            DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            MemberRemoveResponse response = new MemberRemoveResponse();
-            try
-            {
-                response = _clusterClient.MemberRemove(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return CallEtcd((connection) => connection.clusterClient
+                .MemberRemove(request, headers, deadline, cancellationToken));
         }
 
         /// <summary>
         /// MemberRemoveAsync removes an existing member from the cluster in async
         /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public async Task<MemberRemoveResponse> MemberRemoveAsync(MemberRemoveRequest request)
+        /// <param name="request">The request to send to the server.</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
+        /// <returns>The response received from the server.</returns>
+        public async Task<MemberRemoveResponse> MemberRemoveAsync(MemberRemoveRequest request,
+            Grpc.Core.Metadata headers = null, DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            MemberRemoveResponse response = new MemberRemoveResponse();
-            try
-            {
-                response = await _clusterClient.MemberRemoveAsync(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return await CallEtcdAsync(async (connection) => await connection.clusterClient
+                .MemberRemoveAsync(request, headers, deadline, cancellationToken));
         }
 
         /// <summary>
         /// MemberUpdate updates the member configuration
         /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public MemberUpdateResponse MemberUpdate(MemberUpdateRequest request)
+        /// <param name="request">The request to send to the server.</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
+        /// <returns>The response received from the server.</returns>
+        public MemberUpdateResponse MemberUpdate(MemberUpdateRequest request, Grpc.Core.Metadata headers = null,
+            DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            MemberUpdateResponse response = new MemberUpdateResponse();
-            try
-            {
-                response = _clusterClient.MemberUpdate(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return CallEtcd((connection) => connection.clusterClient
+                .MemberUpdate(request, headers, deadline, cancellationToken));
         }
 
         /// <summary>
         /// MemberUpdateAsync updates the member configuration in async
         /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public async Task<MemberUpdateResponse> MemberUpdateAsync(MemberUpdateRequest request)
+        /// <param name="request">The request to send to the server.</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
+        /// <returns>The response received from the server.</returns>
+        public async Task<MemberUpdateResponse> MemberUpdateAsync(MemberUpdateRequest request,
+            Grpc.Core.Metadata headers = null, DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            MemberUpdateResponse response = new MemberUpdateResponse();
-            try
-            {
-                response = await _clusterClient.MemberUpdateAsync(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return await CallEtcdAsync(async (connection) => await connection.clusterClient
+                .MemberUpdateAsync(request, headers, deadline, cancellationToken));
         }
 
         /// <summary>
         /// MemberList lists all the members in the cluster
         /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public MemberListResponse MemberList(MemberListRequest request)
+        /// <param name="request">The request to send to the server.</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
+        /// <returns>The response received from the server.</returns>
+        public MemberListResponse MemberList(MemberListRequest request, Grpc.Core.Metadata headers = null,
+            DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            MemberListResponse response = new MemberListResponse();
-            try
-            {
-                response = _clusterClient.MemberList(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return CallEtcd((connection) => connection.clusterClient
+                .MemberList(request, headers, deadline, cancellationToken));
         }
 
         /// <summary>
         /// MemberListAsync lists all the members in the cluster in async
         /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public async Task<MemberListResponse> MemberListAsync(MemberListRequest request)
+        /// <param name="request">The request to send to the server.</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
+        /// <returns>The response received from the server.</returns>
+        public async Task<MemberListResponse> MemberListAsync(MemberListRequest request,
+            Grpc.Core.Metadata headers = null, DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            MemberListResponse response = new MemberListResponse();
-            try
-            {
-                response = await _clusterClient.MemberListAsync(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return await CallEtcdAsync(async (connection) => await connection.clusterClient
+                .MemberListAsync(request, headers, deadline, cancellationToken));
         }
-
-
     }
 }

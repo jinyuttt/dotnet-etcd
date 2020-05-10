@@ -1,8 +1,10 @@
-﻿using Etcdserverpb;
-using Grpc.Core;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Etcdserverpb;
+
+using Grpc.Core;
 
 namespace dotnet_etcd
 {
@@ -12,144 +14,95 @@ namespace dotnet_etcd
         ///  Alarm activates, deactivates, and queries alarms regarding cluster health
         /// </summary>
         /// <param name="request">Alarm request</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
         /// <returns>Alarm Response</returns>
-        public AlarmResponse Alarm(AlarmRequest request)
+        public AlarmResponse Alarm(AlarmRequest request, Grpc.Core.Metadata headers = null, DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            AlarmResponse response = new AlarmResponse();
-            try
-            {
-                response = _maintenanceClient.Alarm(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return CallEtcd((connection) => connection.maintenanceClient
+                .Alarm(request, headers, deadline, cancellationToken));
         }
 
         /// <summary>
         ///  Alarm activates, deactivates, and queries alarms regarding cluster health in async
         /// </summary>
         /// <param name="request">Alarm request</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
         /// <returns>Alarm Response</returns>
-        public async Task<AlarmResponse> AlarmAsync(AlarmRequest request)
+        public async Task<AlarmResponse> AlarmAsync(AlarmRequest request, Grpc.Core.Metadata headers = null,
+            DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            AlarmResponse response = new AlarmResponse();
-            try
-            {
-                response = await _maintenanceClient.AlarmAsync(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return await CallEtcdAsync(async (connection) => await connection.maintenanceClient
+                .AlarmAsync(request, headers, deadline, cancellationToken));
         }
 
         /// <summary>
         /// Status gets the status of the member.
         /// </summary>
         /// <param name="request">Status Request</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
         /// <returns>Status response</returns>
-        public StatusResponse Status(StatusRequest request)
+        public StatusResponse Status(StatusRequest request, Grpc.Core.Metadata headers = null,
+            DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            StatusResponse response = new StatusResponse();
-            try
-            {
-                response = _maintenanceClient.Status(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return CallEtcd((connection) => connection.maintenanceClient
+                .Status(request, headers, deadline, cancellationToken));
         }
 
         /// <summary>
         /// Status gets the status of the member in async.
         /// </summary>
         /// <param name="request">Status Request</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
         /// <returns>Status response</returns>
-        public async Task<StatusResponse> StatusASync(StatusRequest request)
+        public async Task<StatusResponse> StatusASync(StatusRequest request, Grpc.Core.Metadata headers = null,
+            DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            StatusResponse response = new StatusResponse();
-            try
-            {
-                response = await _maintenanceClient.StatusAsync(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return await CallEtcdAsync(async (connection) => await connection.maintenanceClient
+                .StatusAsync(request, headers, deadline, cancellationToken));
         }
 
         /// <summary>
         /// Defragment defragments a member's backend database to recover storage space.
         /// </summary>
         /// <param name="request">Defragment Request</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
         /// <returns>Defragment Response</returns>
-        public DefragmentResponse Defragment(DefragmentRequest request)
+        public DefragmentResponse Defragment(DefragmentRequest request, Grpc.Core.Metadata headers = null,
+            DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            DefragmentResponse response = new DefragmentResponse();
-            try
-            {
-                response = _maintenanceClient.Defragment(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return CallEtcd((connection) => connection.maintenanceClient
+                .Defragment(request, headers, deadline, cancellationToken));
         }
 
         /// <summary>
         /// Defragment defragments a member's backend database to recover storage space in async.
         /// </summary>
         /// <param name="request">Defragment Request</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
         /// <returns>Defragment Response</returns>
-        public async Task<DefragmentResponse> DefragmentAsync(DefragmentRequest request)
+        public async Task<DefragmentResponse> DefragmentAsync(DefragmentRequest request,
+            Grpc.Core.Metadata headers = null, DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            DefragmentResponse response = new DefragmentResponse();
-            try
-            {
-                response = await _maintenanceClient.DefragmentAsync(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return await CallEtcdAsync(async (connection) => await connection.maintenanceClient
+                .DefragmentAsync(request, headers, deadline, cancellationToken));
         }
 
         /// <summary>
@@ -161,24 +114,15 @@ namespace dotnet_etcd
         /// Use "HashKV" API instead for "key" bucket consistency checks.
         /// </summary>
         /// <param name="request">Hash Request</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
         /// <returns>Hash Response</returns>
-        public HashResponse Hash(HashRequest request)
+        public HashResponse Hash(HashRequest request, Grpc.Core.Metadata headers = null, DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            HashResponse response = new HashResponse();
-            try
-            {
-                response = _maintenanceClient.Hash(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return CallEtcd((connection) => connection.maintenanceClient
+                .Hash(request, headers, deadline, cancellationToken));
         }
 
         /// <summary>
@@ -190,24 +134,16 @@ namespace dotnet_etcd
         /// Use "HashKV" API instead for "key" bucket consistency checks.
         /// </summary>
         /// <param name="request">Hash Request</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
         /// <returns>Hash Response</returns>
-        public async Task<HashResponse> HashAsync(HashRequest request)
+        public async Task<HashResponse> HashAsync(HashRequest request, Grpc.Core.Metadata headers = null,
+            DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            HashResponse response = new HashResponse();
-            try
-            {
-                response = await _maintenanceClient.HashAsync(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return await CallEtcdAsync(async (connection) => await connection.maintenanceClient
+                .HashAsync(request, headers, deadline, cancellationToken));
         }
 
         /// <summary>
@@ -215,24 +151,16 @@ namespace dotnet_etcd
         /// It only iterates "key" bucket in backend storage.
         /// </summary>
         /// <param name="request">HashKV Request</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
         /// <returns>HashKV Response</returns>
-        public HashKVResponse HashKV(HashKVRequest request)
+        public HashKVResponse HashKV(HashKVRequest request, Grpc.Core.Metadata headers = null,
+            DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            HashKVResponse response = new HashKVResponse();
-            try
-            {
-                response = _maintenanceClient.HashKV(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return CallEtcd((connection) => connection.maintenanceClient
+                .HashKV(request, headers, deadline, cancellationToken));
         }
 
         /// <summary>
@@ -240,147 +168,101 @@ namespace dotnet_etcd
         /// It only iterates "key" bucket in backend storage.
         /// </summary>
         /// <param name="request">HashKV Request</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
         /// <returns>HashKV Response</returns>
-        public async Task<HashKVResponse> HashKVAsync(HashKVRequest request)
+        public async Task<HashKVResponse> HashKVAsync(HashKVRequest request, Grpc.Core.Metadata headers = null,
+            DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            HashKVResponse response = new HashKVResponse();
-            try
-            {
-                response = await _maintenanceClient.HashKVAsync(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return await CallEtcdAsync(async (connection) => await connection.maintenanceClient
+                .HashKVAsync(request, headers, deadline, cancellationToken));
         }
 
         /// <summary>
         /// Snapshot sends a snapshot of the entire backend from a member over a stream to a client.
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="request">The request to send to the server.</param>
         /// <param name="method"></param>
-        /// <param name="token"></param>
-        public async void Snapshot(SnapshotRequest request, Action<SnapshotResponse> method, CancellationToken token)
+        /// <param name="cancellationToken"></param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        public async Task Snapshot(SnapshotRequest request, Action<SnapshotResponse> method,
+            CancellationToken cancellationToken, Grpc.Core.Metadata headers = null, DateTime? deadline = null)
         {
-            try
+            await CallEtcdAsync(async (connection) =>
             {
-                using (AsyncServerStreamingCall<SnapshotResponse> snapshotter = _maintenanceClient.Snapshot(request, _headers))
+                using (AsyncServerStreamingCall<SnapshotResponse> snapshotter = connection
+                    .maintenanceClient.Snapshot(request, headers, deadline, cancellationToken))
                 {
-                    Task snapshotTask = Task.Run(async () =>
+                    while (await snapshotter.ResponseStream.MoveNext(cancellationToken))
                     {
-                        while (await snapshotter.ResponseStream.MoveNext(token))
+                        SnapshotResponse update = snapshotter.ResponseStream.Current;
+                        method(update);
+                    }
+                }
+            });
+        }
+
+        /// <summary>
+        /// Snapshot sends a snapshot of the entire backend from a member over a stream to a client.
+        /// </summary>
+        /// <param name="request">The request to send to the server.</param>
+        /// <param name="methods"></param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        public async Task Snapshot(SnapshotRequest request, Action<SnapshotResponse>[] methods,
+            CancellationToken cancellationToken, Grpc.Core.Metadata headers = null, DateTime? deadline = null)
+        {
+            await CallEtcdAsync(async (connection) =>
+            {
+                using (AsyncServerStreamingCall<SnapshotResponse> snapshotter = connection
+                    .maintenanceClient.Snapshot(request, headers, deadline, cancellationToken))
+                {
+                    while (await snapshotter.ResponseStream.MoveNext(cancellationToken))
+                    {
+                        SnapshotResponse update = snapshotter.ResponseStream.Current;
+                        foreach (Action<SnapshotResponse> method in methods)
                         {
-                            SnapshotResponse update = snapshotter.ResponseStream.Current;
                             method(update);
                         }
-                    });
-
-                    await snapshotTask;
+                    }
                 }
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-
-        /// <summary>
-        /// Snapshot sends a snapshot of the entire backend from a member over a stream to a client.
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="methods"></param>
-        /// <param name="token"></param>
-        public async void Snapshot(SnapshotRequest request, Action<SnapshotResponse>[] methods, CancellationToken token)
-        {
-            try
-            {
-                using (AsyncServerStreamingCall<SnapshotResponse> snapshotter = _maintenanceClient.Snapshot(request, _headers))
-                {
-                    Task snapshotTask = Task.Run(async () =>
-                    {
-                        while (await snapshotter.ResponseStream.MoveNext(token))
-                        {
-                            SnapshotResponse update = snapshotter.ResponseStream.Current;
-                            foreach (Action<SnapshotResponse> method in methods)
-                            {
-                                method(update);
-                            }
-                        }
-                    });
-
-                    await snapshotTask;
-                }
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
+            });
         }
 
         /// <summary>
         /// MoveLeader requests current leader node to transfer its leadership to transferee.
         /// </summary>
         /// <param name="request">MoveLeader Request</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
         /// <returns>MoveLeader Response</returns>
-        public MoveLeaderResponse MoveLeader(MoveLeaderRequest request)
+        public MoveLeaderResponse MoveLeader(MoveLeaderRequest request, Grpc.Core.Metadata headers = null,
+            DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            MoveLeaderResponse response = new MoveLeaderResponse();
-            try
-            {
-                response = _maintenanceClient.MoveLeader(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return CallEtcd((connection) => connection.maintenanceClient
+                .MoveLeader(request, headers, deadline, cancellationToken));
         }
 
         /// <summary>
         /// MoveLeader requests current leader node to transfer its leadership to transferee in async.
         /// </summary>
         /// <param name="request">MoveLeader Request</param>
+        /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+        /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+        /// <param name="cancellationToken">An optional token for canceling the call.</param>
         /// <returns>MoveLeader Response</returns>
-        public async Task<MoveLeaderResponse> MoveLeaderAsync(MoveLeaderRequest request)
+        public async Task<MoveLeaderResponse> MoveLeaderAsync(MoveLeaderRequest request,
+            Grpc.Core.Metadata headers = null, DateTime? deadline = null,
+            CancellationToken cancellationToken = default)
         {
-            MoveLeaderResponse response = new MoveLeaderResponse();
-            try
-            {
-                response = await _maintenanceClient.MoveLeaderAsync(request, _headers);
-            }
-            catch (RpcException ex)
-            {
-                ResetConnection(ex);
-                throw;
-            }
-            catch
-            {
-                throw;
-            }
-            return response;
+            return await CallEtcdAsync(async (connection) => await connection.maintenanceClient
+                .MoveLeaderAsync(request, headers, deadline, cancellationToken));
         }
-
     }
 }

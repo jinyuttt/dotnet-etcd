@@ -1,8 +1,11 @@
-﻿using Etcdserverpb;
-using Grpc.Core;
-using System;
-using V3Lockpb;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
+using DnsClient;
+using DnsClient.Protocol;
+
+using dotnet_etcd.multiplexer;
 
 namespace dotnet_etcd
 {
@@ -14,202 +17,112 @@ namespace dotnet_etcd
     {
         #region Variables
 
-        /// <summary>
-        /// Grpc channel through which etcd client will communicate
-        /// </summary>
-        private Channel _channel;
+        private readonly Balancer _balancer;
 
-        /// <summary>
-        /// Hostname of etcd server
-        /// </summary>
-        private readonly string _host;
-
-        /// <summary>
-        /// Port on which etcd server is listening
-        /// </summary>
-        private readonly int _port;
-
-        /// <summary>
-        /// The username for etcd server for basic auth
-        /// </summary>
-        private readonly string _username;
-
-        /// <summary>
-        /// The password for etcd server for basic auth
-        /// </summary>
-        private readonly string _password;
-
-        /// <summary>
-        /// CA Certificate contents to be used to connect to etcd.
-        /// </summary>
-        private readonly string _caCert;
-
-        /// <summary>
-        /// Client Certificate contents to be used to connect to etcd.
-        /// </summary>
-        private readonly string _clientCert;
-
-        /// <summary>
-        /// Client key contents to be used to connect to etcd.
-        /// </summary>
-        private readonly string _clientKey;
-
-        /// <summary>
-        /// The token generated and recieved from etcd server post basic auth call
-        /// </summary>
-        private string _authToken;
-
-        /// <summary>
-        /// The headers for each etcd request
-        /// </summary>
-        private Metadata _headers;
-
-        /// <summary>
-        /// Client for authentication requests
-        /// </summary>
-        private Auth.AuthClient _authClient;
-
-        /// <summary>
-        /// Depicts whether basic auth is enabled or not
-        /// </summary>
-        private readonly bool _basicAuth;
-
-        /// <summary>
-        /// Depicts whether ssl is enabled or not
-        /// </summary>
-        private readonly bool _ssl;
-
-        /// <summary>
-        /// Depicts whether ssl auth is enabled or not
-        /// </summary>
-        private readonly bool _clientSSL;
-
-        /// <summary>
-        /// Depicts whether to connect using publicly trusted roots.
-        /// </summary>
-        private readonly bool _publicRootCa;
-
-        private Watch.WatchClient _watchClient;
-
-        private Lease.LeaseClient _leaseClient;
-
-        private Lock.LockClient _lockClient;
-
-        /// <summary>
-        /// Key-Value client through which operations like range/put on etcd can be performed
-        /// </summary>
-        private KV.KVClient _kvClient;
-
-        /// <summary>
-        /// Client throug which operations like Add, Remove, Update and List
-        /// on etcd members could be performed.
-        /// </summary>
-        private Cluster.ClusterClient _clusterClient;
-
-        /// <summary>
-        /// Client through which maintenance operations can be performed.
-        /// </summary>
-        private Maintenance.MaintenanceClient _maintenanceClient;
         #endregion
 
         #region Initializers
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="host">etcd server hostname</param>
-        /// <param name="port">etcd server port</param>
-        /// <param name="username">Username for basic auth on etcd</param>
-        /// <param name="password">Password for basic auth on etcd</param>
-        /// <param name="caCert">Certificate contents to connect to etcd server</param>
-        /// <param name="clientCert"></param>
-        /// <param name="clientKey"></param>
-        public EtcdClient(string host, int port, string username = "", string password = "", string caCert = "", string clientCert = "", string clientKey = "", bool publicRootCa = false)
+        public EtcdClient(string connectionString, int port = 2379, string username = "", string password = "",
+            string caCert = "", string clientCert = "", string clientKey = "", bool publicRootCa = false)
         {
-            _host = host;
-            _port = port;
-            _caCert = caCert;
-            _clientCert = clientCert;
-            _clientKey = clientKey;
-            _username = username;
-            _password = password;
-            _publicRootCa = publicRootCa;
-
-            _basicAuth = (!string.IsNullOrWhiteSpace(username) && !(string.IsNullOrWhiteSpace(password)));
-            _ssl = !_publicRootCa && !string.IsNullOrWhiteSpace(caCert);
-            _clientSSL = _ssl && (!string.IsNullOrWhiteSpace(clientCert) && !(string.IsNullOrWhiteSpace(clientKey)));
-
-
-            Init();
-        }
-
-        private void Init()
-        {
-            try
+            if (string.IsNullOrWhiteSpace(connectionString))
             {
-                if (_publicRootCa)
-                {
-                    _channel = new Channel(_host, _port, new SslCredentials());
-                }
-                else if (_clientSSL)
-                {
-                    _channel = new Channel(
-                        _host,
-                        _port,
-                        new SslCredentials(
-                            _caCert,
-                            new KeyCertificatePair(_clientCert, _clientKey)
-                        )
-                    );
-                }
-                else if (_ssl)
-                {
-                    _channel = new Channel(_host, _port, new SslCredentials(_caCert));
-                }
-                else
-                {
-                    _channel = new Channel(_host, _port, ChannelCredentials.Insecure);
-                }
-
-                if (_basicAuth)
-                {
-                    Authenticate();
-                }
-
-                _kvClient = new KV.KVClient(_channel);
-                _watchClient = new Watch.WatchClient(_channel);
-                _leaseClient = new Lease.LeaseClient(_channel);
-                _lockClient = new Lock.LockClient(_channel);
-                _clusterClient = new Cluster.ClusterClient(_channel);
-                _maintenanceClient = new Maintenance.MaintenanceClient(_channel);
+                throw new Exception("etcd connection string is empty.");
             }
-            catch
+
+            string[] hosts;
+
+            if (connectionString.ToLowerInvariant().StartsWith("discovery-srv://"))
             {
-                throw;
+                // Expecting it to be discovery-srv://{domain}/{name}
+                // Examples:
+                // discovery-srv://my-domain.local/ would expect entries for either _etcd-client-ssl._tcp.my-domain.local or _etcd-client._tcp.my-domain.local
+                // discovery-srv://my-domain.local/project1 would expect entries for either _etcd-client-ssl-project1._tcp.my-domain.local or _etcd-client-project1._tcp.my-domain.local
+                Uri discoverySrv = new Uri(connectionString);
+                LookupClient client = new LookupClient(new LookupClientOptions
+                {
+                    UseCache = true
+                });
+                
+                // SSL first ...
+                string serviceName = "/".Equals(discoverySrv.AbsolutePath)
+                    ? ""
+                    : $"-{discoverySrv.AbsolutePath.Substring(startIndex: 1, length: discoverySrv.AbsolutePath.Length - 1)}";
+                IDnsQueryResponse result = client.Query($"_etcd-client-ssl{serviceName}._tcp.{discoverySrv.Host}", QueryType.SRV);
+                string scheme = "https";
+                if (result.HasError)
+                {
+                    scheme = "http";
+                    // No SSL ...
+                    result = client.Query($"_etcd-client{serviceName}._tcp.{discoverySrv.Host}", QueryType.SRV);
+                    if (result.HasError)
+                    {
+                        throw new InvalidOperationException(result.ErrorMessage);
+                    }
+                }
+
+                List<SrvRecord> results = result.Answers.OfType<SrvRecord>().OrderBy(a => a.Priority)
+                    .ThenByDescending(a => a.Weight).ToList();
+                hosts = new string[results.Count];
+                for (int index = 0; index < results.Count; index++)
+                {
+                    SrvRecord srvRecord = results[index];
+                    DnsResourceRecord additionalRecord =
+                        result.Additionals.FirstOrDefault(p => p.DomainName.Equals(srvRecord.Target));
+                    string host = srvRecord.Target.Value;
+
+                    if (additionalRecord is ARecord aRecord)
+                    {
+                        host = aRecord.Address.ToString();
+                    }
+                    else if (additionalRecord is CNameRecord cname)
+                    {
+                        host = cname.CanonicalName;
+                    }
+
+                    if (host.EndsWith("."))
+                    {
+                        host = host.Substring(startIndex: 0, host.Length - 1);
+                    }
+
+                    hosts[index] = $"{scheme}://{host}:{srvRecord.Port}";
+                }
             }
-            _disposed = false;
-        }
+            else
+            {
+                hosts = connectionString.Split(',');
+            }
 
-        ~EtcdClient()
-        {
-            Dispose(true);
-        }
+            List<Uri> nodes = new List<Uri>();
 
+            for (int i = 0; i < hosts.Length; i++)
+            {
+                string host = hosts[i];
+                if (host.Split(':').Length < 3)
+                {
+                    host += $":{Convert.ToString(port)}";
+                }
+
+                nodes.Add(new Uri(host));
+            }
+
+            _balancer = new Balancer(nodes, username, password, caCert, clientCert, clientKey, publicRootCa);
+        }
 
         #endregion
 
         #region IDisposable Support
+
         private bool _disposed = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)
             {
-                if (disposing && _channel.State != ChannelState.Shutdown)
+                if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).
-                    _channel.ShutdownAsync();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
@@ -227,6 +140,7 @@ namespace dotnet_etcd
             // TODO: uncomment the following line if the finalizer is overridden above.
             GC.SuppressFinalize(this);
         }
+
         #endregion
     }
 }

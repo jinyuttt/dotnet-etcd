@@ -65,6 +65,7 @@ namespace Etcdserverpb {
     }
 
     /// <summary>Base class for server-side implementations of KV</summary>
+    [grpc::BindServiceMethod(typeof(KV), "BindService")]
     public abstract partial class KVBase
     {
       /// <summary>
@@ -138,7 +139,7 @@ namespace Etcdserverpb {
     {
       /// <summary>Creates a new client for KV</summary>
       /// <param name="channel">The channel to use to make remote calls.</param>
-      public KVClient(grpc::Channel channel) : base(channel)
+      public KVClient(grpc::ChannelBase channel) : base(channel)
       {
       }
       /// <summary>Creates a new client for KV that uses a custom <c>CallInvoker</c>.</summary>
@@ -431,17 +432,17 @@ namespace Etcdserverpb {
           .AddMethod(__Method_Compact, serviceImpl.Compact).Build();
     }
 
-    /// <summary>Register service method implementations with a service binder. Useful when customizing the service binding logic.
+    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
     /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
     /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
     public static void BindService(grpc::ServiceBinderBase serviceBinder, KVBase serviceImpl)
     {
-      serviceBinder.AddMethod(__Method_Range, serviceImpl.Range);
-      serviceBinder.AddMethod(__Method_Put, serviceImpl.Put);
-      serviceBinder.AddMethod(__Method_DeleteRange, serviceImpl.DeleteRange);
-      serviceBinder.AddMethod(__Method_Txn, serviceImpl.Txn);
-      serviceBinder.AddMethod(__Method_Compact, serviceImpl.Compact);
+      serviceBinder.AddMethod(__Method_Range, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.RangeRequest, global::Etcdserverpb.RangeResponse>(serviceImpl.Range));
+      serviceBinder.AddMethod(__Method_Put, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.PutRequest, global::Etcdserverpb.PutResponse>(serviceImpl.Put));
+      serviceBinder.AddMethod(__Method_DeleteRange, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.DeleteRangeRequest, global::Etcdserverpb.DeleteRangeResponse>(serviceImpl.DeleteRange));
+      serviceBinder.AddMethod(__Method_Txn, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.TxnRequest, global::Etcdserverpb.TxnResponse>(serviceImpl.Txn));
+      serviceBinder.AddMethod(__Method_Compact, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.CompactionRequest, global::Etcdserverpb.CompactionResponse>(serviceImpl.Compact));
     }
 
   }
@@ -466,6 +467,7 @@ namespace Etcdserverpb {
     }
 
     /// <summary>Base class for server-side implementations of Watch</summary>
+    [grpc::BindServiceMethod(typeof(Watch), "BindService")]
     public abstract partial class WatchBase
     {
       /// <summary>
@@ -491,7 +493,7 @@ namespace Etcdserverpb {
     {
       /// <summary>Creates a new client for Watch</summary>
       /// <param name="channel">The channel to use to make remote calls.</param>
-      public WatchClient(grpc::Channel channel) : base(channel)
+      public WatchClient(grpc::ChannelBase channel) : base(channel)
       {
       }
       /// <summary>Creates a new client for Watch that uses a custom <c>CallInvoker</c>.</summary>
@@ -552,13 +554,13 @@ namespace Etcdserverpb {
           .AddMethod(__Method_Watch, serviceImpl.Watch).Build();
     }
 
-    /// <summary>Register service method implementations with a service binder. Useful when customizing the service binding logic.
+    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
     /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
     /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
     public static void BindService(grpc::ServiceBinderBase serviceBinder, WatchBase serviceImpl)
     {
-      serviceBinder.AddMethod(__Method_Watch, serviceImpl.Watch);
+      serviceBinder.AddMethod(__Method_Watch, serviceImpl == null ? null : new grpc::DuplexStreamingServerMethod<global::Etcdserverpb.WatchRequest, global::Etcdserverpb.WatchResponse>(serviceImpl.Watch));
     }
 
   }
@@ -574,6 +576,8 @@ namespace Etcdserverpb {
     static readonly grpc::Marshaller<global::Etcdserverpb.LeaseKeepAliveResponse> __Marshaller_etcdserverpb_LeaseKeepAliveResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Etcdserverpb.LeaseKeepAliveResponse.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::Etcdserverpb.LeaseTimeToLiveRequest> __Marshaller_etcdserverpb_LeaseTimeToLiveRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Etcdserverpb.LeaseTimeToLiveRequest.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::Etcdserverpb.LeaseTimeToLiveResponse> __Marshaller_etcdserverpb_LeaseTimeToLiveResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Etcdserverpb.LeaseTimeToLiveResponse.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Etcdserverpb.LeaseLeasesRequest> __Marshaller_etcdserverpb_LeaseLeasesRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Etcdserverpb.LeaseLeasesRequest.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Etcdserverpb.LeaseLeasesResponse> __Marshaller_etcdserverpb_LeaseLeasesResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Etcdserverpb.LeaseLeasesResponse.Parser.ParseFrom);
 
     static readonly grpc::Method<global::Etcdserverpb.LeaseGrantRequest, global::Etcdserverpb.LeaseGrantResponse> __Method_LeaseGrant = new grpc::Method<global::Etcdserverpb.LeaseGrantRequest, global::Etcdserverpb.LeaseGrantResponse>(
         grpc::MethodType.Unary,
@@ -603,6 +607,13 @@ namespace Etcdserverpb {
         __Marshaller_etcdserverpb_LeaseTimeToLiveRequest,
         __Marshaller_etcdserverpb_LeaseTimeToLiveResponse);
 
+    static readonly grpc::Method<global::Etcdserverpb.LeaseLeasesRequest, global::Etcdserverpb.LeaseLeasesResponse> __Method_LeaseLeases = new grpc::Method<global::Etcdserverpb.LeaseLeasesRequest, global::Etcdserverpb.LeaseLeasesResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "LeaseLeases",
+        __Marshaller_etcdserverpb_LeaseLeasesRequest,
+        __Marshaller_etcdserverpb_LeaseLeasesResponse);
+
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
     {
@@ -610,6 +621,7 @@ namespace Etcdserverpb {
     }
 
     /// <summary>Base class for server-side implementations of Lease</summary>
+    [grpc::BindServiceMethod(typeof(Lease), "BindService")]
     public abstract partial class LeaseBase
     {
       /// <summary>
@@ -660,6 +672,17 @@ namespace Etcdserverpb {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
+      /// <summary>
+      /// LeaseLeases lists all existing leases.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Etcdserverpb.LeaseLeasesResponse> LeaseLeases(global::Etcdserverpb.LeaseLeasesRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
     }
 
     /// <summary>Client for Lease</summary>
@@ -667,7 +690,7 @@ namespace Etcdserverpb {
     {
       /// <summary>Creates a new client for Lease</summary>
       /// <param name="channel">The channel to use to make remote calls.</param>
-      public LeaseClient(grpc::Channel channel) : base(channel)
+      public LeaseClient(grpc::ChannelBase channel) : base(channel)
       {
       }
       /// <summary>Creates a new client for Lease that uses a custom <c>CallInvoker</c>.</summary>
@@ -847,6 +870,50 @@ namespace Etcdserverpb {
       {
         return CallInvoker.AsyncUnaryCall(__Method_LeaseTimeToLive, null, options, request);
       }
+      /// <summary>
+      /// LeaseLeases lists all existing leases.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::Etcdserverpb.LeaseLeasesResponse LeaseLeases(global::Etcdserverpb.LeaseLeasesRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return LeaseLeases(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// LeaseLeases lists all existing leases.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::Etcdserverpb.LeaseLeasesResponse LeaseLeases(global::Etcdserverpb.LeaseLeasesRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_LeaseLeases, null, options, request);
+      }
+      /// <summary>
+      /// LeaseLeases lists all existing leases.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::Etcdserverpb.LeaseLeasesResponse> LeaseLeasesAsync(global::Etcdserverpb.LeaseLeasesRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return LeaseLeasesAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// LeaseLeases lists all existing leases.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::Etcdserverpb.LeaseLeasesResponse> LeaseLeasesAsync(global::Etcdserverpb.LeaseLeasesRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_LeaseLeases, null, options, request);
+      }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       protected override LeaseClient NewInstance(ClientBaseConfiguration configuration)
       {
@@ -862,19 +929,21 @@ namespace Etcdserverpb {
           .AddMethod(__Method_LeaseGrant, serviceImpl.LeaseGrant)
           .AddMethod(__Method_LeaseRevoke, serviceImpl.LeaseRevoke)
           .AddMethod(__Method_LeaseKeepAlive, serviceImpl.LeaseKeepAlive)
-          .AddMethod(__Method_LeaseTimeToLive, serviceImpl.LeaseTimeToLive).Build();
+          .AddMethod(__Method_LeaseTimeToLive, serviceImpl.LeaseTimeToLive)
+          .AddMethod(__Method_LeaseLeases, serviceImpl.LeaseLeases).Build();
     }
 
-    /// <summary>Register service method implementations with a service binder. Useful when customizing the service binding logic.
+    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
     /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
     /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
     public static void BindService(grpc::ServiceBinderBase serviceBinder, LeaseBase serviceImpl)
     {
-      serviceBinder.AddMethod(__Method_LeaseGrant, serviceImpl.LeaseGrant);
-      serviceBinder.AddMethod(__Method_LeaseRevoke, serviceImpl.LeaseRevoke);
-      serviceBinder.AddMethod(__Method_LeaseKeepAlive, serviceImpl.LeaseKeepAlive);
-      serviceBinder.AddMethod(__Method_LeaseTimeToLive, serviceImpl.LeaseTimeToLive);
+      serviceBinder.AddMethod(__Method_LeaseGrant, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.LeaseGrantRequest, global::Etcdserverpb.LeaseGrantResponse>(serviceImpl.LeaseGrant));
+      serviceBinder.AddMethod(__Method_LeaseRevoke, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.LeaseRevokeRequest, global::Etcdserverpb.LeaseRevokeResponse>(serviceImpl.LeaseRevoke));
+      serviceBinder.AddMethod(__Method_LeaseKeepAlive, serviceImpl == null ? null : new grpc::DuplexStreamingServerMethod<global::Etcdserverpb.LeaseKeepAliveRequest, global::Etcdserverpb.LeaseKeepAliveResponse>(serviceImpl.LeaseKeepAlive));
+      serviceBinder.AddMethod(__Method_LeaseTimeToLive, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.LeaseTimeToLiveRequest, global::Etcdserverpb.LeaseTimeToLiveResponse>(serviceImpl.LeaseTimeToLive));
+      serviceBinder.AddMethod(__Method_LeaseLeases, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.LeaseLeasesRequest, global::Etcdserverpb.LeaseLeasesResponse>(serviceImpl.LeaseLeases));
     }
 
   }
@@ -890,6 +959,8 @@ namespace Etcdserverpb {
     static readonly grpc::Marshaller<global::Etcdserverpb.MemberUpdateResponse> __Marshaller_etcdserverpb_MemberUpdateResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Etcdserverpb.MemberUpdateResponse.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::Etcdserverpb.MemberListRequest> __Marshaller_etcdserverpb_MemberListRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Etcdserverpb.MemberListRequest.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::Etcdserverpb.MemberListResponse> __Marshaller_etcdserverpb_MemberListResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Etcdserverpb.MemberListResponse.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Etcdserverpb.MemberPromoteRequest> __Marshaller_etcdserverpb_MemberPromoteRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Etcdserverpb.MemberPromoteRequest.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Etcdserverpb.MemberPromoteResponse> __Marshaller_etcdserverpb_MemberPromoteResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Etcdserverpb.MemberPromoteResponse.Parser.ParseFrom);
 
     static readonly grpc::Method<global::Etcdserverpb.MemberAddRequest, global::Etcdserverpb.MemberAddResponse> __Method_MemberAdd = new grpc::Method<global::Etcdserverpb.MemberAddRequest, global::Etcdserverpb.MemberAddResponse>(
         grpc::MethodType.Unary,
@@ -919,6 +990,13 @@ namespace Etcdserverpb {
         __Marshaller_etcdserverpb_MemberListRequest,
         __Marshaller_etcdserverpb_MemberListResponse);
 
+    static readonly grpc::Method<global::Etcdserverpb.MemberPromoteRequest, global::Etcdserverpb.MemberPromoteResponse> __Method_MemberPromote = new grpc::Method<global::Etcdserverpb.MemberPromoteRequest, global::Etcdserverpb.MemberPromoteResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "MemberPromote",
+        __Marshaller_etcdserverpb_MemberPromoteRequest,
+        __Marshaller_etcdserverpb_MemberPromoteResponse);
+
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
     {
@@ -926,6 +1004,7 @@ namespace Etcdserverpb {
     }
 
     /// <summary>Base class for server-side implementations of Cluster</summary>
+    [grpc::BindServiceMethod(typeof(Cluster), "BindService")]
     public abstract partial class ClusterBase
     {
       /// <summary>
@@ -972,6 +1051,17 @@ namespace Etcdserverpb {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
+      /// <summary>
+      /// MemberPromote promotes a member from raft learner (non-voting) to raft voting member.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Etcdserverpb.MemberPromoteResponse> MemberPromote(global::Etcdserverpb.MemberPromoteRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
     }
 
     /// <summary>Client for Cluster</summary>
@@ -979,7 +1069,7 @@ namespace Etcdserverpb {
     {
       /// <summary>Creates a new client for Cluster</summary>
       /// <param name="channel">The channel to use to make remote calls.</param>
-      public ClusterClient(grpc::Channel channel) : base(channel)
+      public ClusterClient(grpc::ChannelBase channel) : base(channel)
       {
       }
       /// <summary>Creates a new client for Cluster that uses a custom <c>CallInvoker</c>.</summary>
@@ -1173,6 +1263,50 @@ namespace Etcdserverpb {
       {
         return CallInvoker.AsyncUnaryCall(__Method_MemberList, null, options, request);
       }
+      /// <summary>
+      /// MemberPromote promotes a member from raft learner (non-voting) to raft voting member.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::Etcdserverpb.MemberPromoteResponse MemberPromote(global::Etcdserverpb.MemberPromoteRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return MemberPromote(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// MemberPromote promotes a member from raft learner (non-voting) to raft voting member.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::Etcdserverpb.MemberPromoteResponse MemberPromote(global::Etcdserverpb.MemberPromoteRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_MemberPromote, null, options, request);
+      }
+      /// <summary>
+      /// MemberPromote promotes a member from raft learner (non-voting) to raft voting member.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::Etcdserverpb.MemberPromoteResponse> MemberPromoteAsync(global::Etcdserverpb.MemberPromoteRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return MemberPromoteAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// MemberPromote promotes a member from raft learner (non-voting) to raft voting member.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::Etcdserverpb.MemberPromoteResponse> MemberPromoteAsync(global::Etcdserverpb.MemberPromoteRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_MemberPromote, null, options, request);
+      }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       protected override ClusterClient NewInstance(ClientBaseConfiguration configuration)
       {
@@ -1188,19 +1322,21 @@ namespace Etcdserverpb {
           .AddMethod(__Method_MemberAdd, serviceImpl.MemberAdd)
           .AddMethod(__Method_MemberRemove, serviceImpl.MemberRemove)
           .AddMethod(__Method_MemberUpdate, serviceImpl.MemberUpdate)
-          .AddMethod(__Method_MemberList, serviceImpl.MemberList).Build();
+          .AddMethod(__Method_MemberList, serviceImpl.MemberList)
+          .AddMethod(__Method_MemberPromote, serviceImpl.MemberPromote).Build();
     }
 
-    /// <summary>Register service method implementations with a service binder. Useful when customizing the service binding logic.
+    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
     /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
     /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
     public static void BindService(grpc::ServiceBinderBase serviceBinder, ClusterBase serviceImpl)
     {
-      serviceBinder.AddMethod(__Method_MemberAdd, serviceImpl.MemberAdd);
-      serviceBinder.AddMethod(__Method_MemberRemove, serviceImpl.MemberRemove);
-      serviceBinder.AddMethod(__Method_MemberUpdate, serviceImpl.MemberUpdate);
-      serviceBinder.AddMethod(__Method_MemberList, serviceImpl.MemberList);
+      serviceBinder.AddMethod(__Method_MemberAdd, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.MemberAddRequest, global::Etcdserverpb.MemberAddResponse>(serviceImpl.MemberAdd));
+      serviceBinder.AddMethod(__Method_MemberRemove, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.MemberRemoveRequest, global::Etcdserverpb.MemberRemoveResponse>(serviceImpl.MemberRemove));
+      serviceBinder.AddMethod(__Method_MemberUpdate, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.MemberUpdateRequest, global::Etcdserverpb.MemberUpdateResponse>(serviceImpl.MemberUpdate));
+      serviceBinder.AddMethod(__Method_MemberList, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.MemberListRequest, global::Etcdserverpb.MemberListResponse>(serviceImpl.MemberList));
+      serviceBinder.AddMethod(__Method_MemberPromote, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.MemberPromoteRequest, global::Etcdserverpb.MemberPromoteResponse>(serviceImpl.MemberPromote));
     }
 
   }
@@ -1279,6 +1415,7 @@ namespace Etcdserverpb {
     }
 
     /// <summary>Base class for server-side implementations of Maintenance</summary>
+    [grpc::BindServiceMethod(typeof(Maintenance), "BindService")]
     public abstract partial class MaintenanceBase
     {
       /// <summary>
@@ -1315,9 +1452,12 @@ namespace Etcdserverpb {
       }
 
       /// <summary>
-      /// Hash returns the hash of the local KV state for consistency checking purpose.
-      /// This is designed for testing; do not use this in production when there
-      /// are ongoing transactions.
+      /// Hash computes the hash of whole backend keyspace,
+      /// including key, lease, and other buckets in storage.
+      /// This is designed for testing ONLY!
+      /// Do not rely on this in production with ongoing transactions,
+      /// since Hash operation does not hold MVCC locks.
+      /// Use "HashKV" API instead for "key" bucket consistency checks.
       /// </summary>
       /// <param name="request">The request received from the client.</param>
       /// <param name="context">The context of the server-side call handler being invoked.</param>
@@ -1329,6 +1469,7 @@ namespace Etcdserverpb {
 
       /// <summary>
       /// HashKV computes the hash of all MVCC keys up to a given revision.
+      /// It only iterates "key" bucket in backend storage.
       /// </summary>
       /// <param name="request">The request received from the client.</param>
       /// <param name="context">The context of the server-side call handler being invoked.</param>
@@ -1368,7 +1509,7 @@ namespace Etcdserverpb {
     {
       /// <summary>Creates a new client for Maintenance</summary>
       /// <param name="channel">The channel to use to make remote calls.</param>
-      public MaintenanceClient(grpc::Channel channel) : base(channel)
+      public MaintenanceClient(grpc::ChannelBase channel) : base(channel)
       {
       }
       /// <summary>Creates a new client for Maintenance that uses a custom <c>CallInvoker</c>.</summary>
@@ -1519,9 +1660,12 @@ namespace Etcdserverpb {
         return CallInvoker.AsyncUnaryCall(__Method_Defragment, null, options, request);
       }
       /// <summary>
-      /// Hash returns the hash of the local KV state for consistency checking purpose.
-      /// This is designed for testing; do not use this in production when there
-      /// are ongoing transactions.
+      /// Hash computes the hash of whole backend keyspace,
+      /// including key, lease, and other buckets in storage.
+      /// This is designed for testing ONLY!
+      /// Do not rely on this in production with ongoing transactions,
+      /// since Hash operation does not hold MVCC locks.
+      /// Use "HashKV" API instead for "key" bucket consistency checks.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -1533,9 +1677,12 @@ namespace Etcdserverpb {
         return Hash(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
-      /// Hash returns the hash of the local KV state for consistency checking purpose.
-      /// This is designed for testing; do not use this in production when there
-      /// are ongoing transactions.
+      /// Hash computes the hash of whole backend keyspace,
+      /// including key, lease, and other buckets in storage.
+      /// This is designed for testing ONLY!
+      /// Do not rely on this in production with ongoing transactions,
+      /// since Hash operation does not hold MVCC locks.
+      /// Use "HashKV" API instead for "key" bucket consistency checks.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -1545,9 +1692,12 @@ namespace Etcdserverpb {
         return CallInvoker.BlockingUnaryCall(__Method_Hash, null, options, request);
       }
       /// <summary>
-      /// Hash returns the hash of the local KV state for consistency checking purpose.
-      /// This is designed for testing; do not use this in production when there
-      /// are ongoing transactions.
+      /// Hash computes the hash of whole backend keyspace,
+      /// including key, lease, and other buckets in storage.
+      /// This is designed for testing ONLY!
+      /// Do not rely on this in production with ongoing transactions,
+      /// since Hash operation does not hold MVCC locks.
+      /// Use "HashKV" API instead for "key" bucket consistency checks.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -1559,9 +1709,12 @@ namespace Etcdserverpb {
         return HashAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
-      /// Hash returns the hash of the local KV state for consistency checking purpose.
-      /// This is designed for testing; do not use this in production when there
-      /// are ongoing transactions.
+      /// Hash computes the hash of whole backend keyspace,
+      /// including key, lease, and other buckets in storage.
+      /// This is designed for testing ONLY!
+      /// Do not rely on this in production with ongoing transactions,
+      /// since Hash operation does not hold MVCC locks.
+      /// Use "HashKV" API instead for "key" bucket consistency checks.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -1572,6 +1725,7 @@ namespace Etcdserverpb {
       }
       /// <summary>
       /// HashKV computes the hash of all MVCC keys up to a given revision.
+      /// It only iterates "key" bucket in backend storage.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -1584,6 +1738,7 @@ namespace Etcdserverpb {
       }
       /// <summary>
       /// HashKV computes the hash of all MVCC keys up to a given revision.
+      /// It only iterates "key" bucket in backend storage.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -1594,6 +1749,7 @@ namespace Etcdserverpb {
       }
       /// <summary>
       /// HashKV computes the hash of all MVCC keys up to a given revision.
+      /// It only iterates "key" bucket in backend storage.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -1606,6 +1762,7 @@ namespace Etcdserverpb {
       }
       /// <summary>
       /// HashKV computes the hash of all MVCC keys up to a given revision.
+      /// It only iterates "key" bucket in backend storage.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -1701,19 +1858,19 @@ namespace Etcdserverpb {
           .AddMethod(__Method_MoveLeader, serviceImpl.MoveLeader).Build();
     }
 
-    /// <summary>Register service method implementations with a service binder. Useful when customizing the service binding logic.
+    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
     /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
     /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
     public static void BindService(grpc::ServiceBinderBase serviceBinder, MaintenanceBase serviceImpl)
     {
-      serviceBinder.AddMethod(__Method_Alarm, serviceImpl.Alarm);
-      serviceBinder.AddMethod(__Method_Status, serviceImpl.Status);
-      serviceBinder.AddMethod(__Method_Defragment, serviceImpl.Defragment);
-      serviceBinder.AddMethod(__Method_Hash, serviceImpl.Hash);
-      serviceBinder.AddMethod(__Method_HashKV, serviceImpl.HashKV);
-      serviceBinder.AddMethod(__Method_Snapshot, serviceImpl.Snapshot);
-      serviceBinder.AddMethod(__Method_MoveLeader, serviceImpl.MoveLeader);
+      serviceBinder.AddMethod(__Method_Alarm, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.AlarmRequest, global::Etcdserverpb.AlarmResponse>(serviceImpl.Alarm));
+      serviceBinder.AddMethod(__Method_Status, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.StatusRequest, global::Etcdserverpb.StatusResponse>(serviceImpl.Status));
+      serviceBinder.AddMethod(__Method_Defragment, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.DefragmentRequest, global::Etcdserverpb.DefragmentResponse>(serviceImpl.Defragment));
+      serviceBinder.AddMethod(__Method_Hash, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.HashRequest, global::Etcdserverpb.HashResponse>(serviceImpl.Hash));
+      serviceBinder.AddMethod(__Method_HashKV, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.HashKVRequest, global::Etcdserverpb.HashKVResponse>(serviceImpl.HashKV));
+      serviceBinder.AddMethod(__Method_Snapshot, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Etcdserverpb.SnapshotRequest, global::Etcdserverpb.SnapshotResponse>(serviceImpl.Snapshot));
+      serviceBinder.AddMethod(__Method_MoveLeader, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.MoveLeaderRequest, global::Etcdserverpb.MoveLeaderResponse>(serviceImpl.MoveLeader));
     }
 
   }
@@ -1873,6 +2030,7 @@ namespace Etcdserverpb {
     }
 
     /// <summary>Base class for server-side implementations of Auth</summary>
+    [grpc::BindServiceMethod(typeof(Auth), "BindService")]
     public abstract partial class AuthBase
     {
       /// <summary>
@@ -1909,7 +2067,7 @@ namespace Etcdserverpb {
       }
 
       /// <summary>
-      /// UserAdd adds a new user.
+      /// UserAdd adds a new user. User name cannot be empty.
       /// </summary>
       /// <param name="request">The request received from the client.</param>
       /// <param name="context">The context of the server-side call handler being invoked.</param>
@@ -1986,7 +2144,7 @@ namespace Etcdserverpb {
       }
 
       /// <summary>
-      /// RoleAdd adds a new role.
+      /// RoleAdd adds a new role. Role name cannot be empty.
       /// </summary>
       /// <param name="request">The request received from the client.</param>
       /// <param name="context">The context of the server-side call handler being invoked.</param>
@@ -2058,7 +2216,7 @@ namespace Etcdserverpb {
     {
       /// <summary>Creates a new client for Auth</summary>
       /// <param name="channel">The channel to use to make remote calls.</param>
-      public AuthClient(grpc::Channel channel) : base(channel)
+      public AuthClient(grpc::ChannelBase channel) : base(channel)
       {
       }
       /// <summary>Creates a new client for Auth that uses a custom <c>CallInvoker</c>.</summary>
@@ -2209,7 +2367,7 @@ namespace Etcdserverpb {
         return CallInvoker.AsyncUnaryCall(__Method_Authenticate, null, options, request);
       }
       /// <summary>
-      /// UserAdd adds a new user.
+      /// UserAdd adds a new user. User name cannot be empty.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -2221,7 +2379,7 @@ namespace Etcdserverpb {
         return UserAdd(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
-      /// UserAdd adds a new user.
+      /// UserAdd adds a new user. User name cannot be empty.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -2231,7 +2389,7 @@ namespace Etcdserverpb {
         return CallInvoker.BlockingUnaryCall(__Method_UserAdd, null, options, request);
       }
       /// <summary>
-      /// UserAdd adds a new user.
+      /// UserAdd adds a new user. User name cannot be empty.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -2243,7 +2401,7 @@ namespace Etcdserverpb {
         return UserAddAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
-      /// UserAdd adds a new user.
+      /// UserAdd adds a new user. User name cannot be empty.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -2517,7 +2675,7 @@ namespace Etcdserverpb {
         return CallInvoker.AsyncUnaryCall(__Method_UserRevokeRole, null, options, request);
       }
       /// <summary>
-      /// RoleAdd adds a new role.
+      /// RoleAdd adds a new role. Role name cannot be empty.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -2529,7 +2687,7 @@ namespace Etcdserverpb {
         return RoleAdd(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
-      /// RoleAdd adds a new role.
+      /// RoleAdd adds a new role. Role name cannot be empty.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -2539,7 +2697,7 @@ namespace Etcdserverpb {
         return CallInvoker.BlockingUnaryCall(__Method_RoleAdd, null, options, request);
       }
       /// <summary>
-      /// RoleAdd adds a new role.
+      /// RoleAdd adds a new role. Role name cannot be empty.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -2551,7 +2709,7 @@ namespace Etcdserverpb {
         return RoleAddAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
-      /// RoleAdd adds a new role.
+      /// RoleAdd adds a new role. Role name cannot be empty.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -2810,28 +2968,28 @@ namespace Etcdserverpb {
           .AddMethod(__Method_RoleRevokePermission, serviceImpl.RoleRevokePermission).Build();
     }
 
-    /// <summary>Register service method implementations with a service binder. Useful when customizing the service binding logic.
+    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
     /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
     /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
     public static void BindService(grpc::ServiceBinderBase serviceBinder, AuthBase serviceImpl)
     {
-      serviceBinder.AddMethod(__Method_AuthEnable, serviceImpl.AuthEnable);
-      serviceBinder.AddMethod(__Method_AuthDisable, serviceImpl.AuthDisable);
-      serviceBinder.AddMethod(__Method_Authenticate, serviceImpl.Authenticate);
-      serviceBinder.AddMethod(__Method_UserAdd, serviceImpl.UserAdd);
-      serviceBinder.AddMethod(__Method_UserGet, serviceImpl.UserGet);
-      serviceBinder.AddMethod(__Method_UserList, serviceImpl.UserList);
-      serviceBinder.AddMethod(__Method_UserDelete, serviceImpl.UserDelete);
-      serviceBinder.AddMethod(__Method_UserChangePassword, serviceImpl.UserChangePassword);
-      serviceBinder.AddMethod(__Method_UserGrantRole, serviceImpl.UserGrantRole);
-      serviceBinder.AddMethod(__Method_UserRevokeRole, serviceImpl.UserRevokeRole);
-      serviceBinder.AddMethod(__Method_RoleAdd, serviceImpl.RoleAdd);
-      serviceBinder.AddMethod(__Method_RoleGet, serviceImpl.RoleGet);
-      serviceBinder.AddMethod(__Method_RoleList, serviceImpl.RoleList);
-      serviceBinder.AddMethod(__Method_RoleDelete, serviceImpl.RoleDelete);
-      serviceBinder.AddMethod(__Method_RoleGrantPermission, serviceImpl.RoleGrantPermission);
-      serviceBinder.AddMethod(__Method_RoleRevokePermission, serviceImpl.RoleRevokePermission);
+      serviceBinder.AddMethod(__Method_AuthEnable, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.AuthEnableRequest, global::Etcdserverpb.AuthEnableResponse>(serviceImpl.AuthEnable));
+      serviceBinder.AddMethod(__Method_AuthDisable, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.AuthDisableRequest, global::Etcdserverpb.AuthDisableResponse>(serviceImpl.AuthDisable));
+      serviceBinder.AddMethod(__Method_Authenticate, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.AuthenticateRequest, global::Etcdserverpb.AuthenticateResponse>(serviceImpl.Authenticate));
+      serviceBinder.AddMethod(__Method_UserAdd, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.AuthUserAddRequest, global::Etcdserverpb.AuthUserAddResponse>(serviceImpl.UserAdd));
+      serviceBinder.AddMethod(__Method_UserGet, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.AuthUserGetRequest, global::Etcdserverpb.AuthUserGetResponse>(serviceImpl.UserGet));
+      serviceBinder.AddMethod(__Method_UserList, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.AuthUserListRequest, global::Etcdserverpb.AuthUserListResponse>(serviceImpl.UserList));
+      serviceBinder.AddMethod(__Method_UserDelete, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.AuthUserDeleteRequest, global::Etcdserverpb.AuthUserDeleteResponse>(serviceImpl.UserDelete));
+      serviceBinder.AddMethod(__Method_UserChangePassword, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.AuthUserChangePasswordRequest, global::Etcdserverpb.AuthUserChangePasswordResponse>(serviceImpl.UserChangePassword));
+      serviceBinder.AddMethod(__Method_UserGrantRole, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.AuthUserGrantRoleRequest, global::Etcdserverpb.AuthUserGrantRoleResponse>(serviceImpl.UserGrantRole));
+      serviceBinder.AddMethod(__Method_UserRevokeRole, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.AuthUserRevokeRoleRequest, global::Etcdserverpb.AuthUserRevokeRoleResponse>(serviceImpl.UserRevokeRole));
+      serviceBinder.AddMethod(__Method_RoleAdd, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.AuthRoleAddRequest, global::Etcdserverpb.AuthRoleAddResponse>(serviceImpl.RoleAdd));
+      serviceBinder.AddMethod(__Method_RoleGet, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.AuthRoleGetRequest, global::Etcdserverpb.AuthRoleGetResponse>(serviceImpl.RoleGet));
+      serviceBinder.AddMethod(__Method_RoleList, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.AuthRoleListRequest, global::Etcdserverpb.AuthRoleListResponse>(serviceImpl.RoleList));
+      serviceBinder.AddMethod(__Method_RoleDelete, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.AuthRoleDeleteRequest, global::Etcdserverpb.AuthRoleDeleteResponse>(serviceImpl.RoleDelete));
+      serviceBinder.AddMethod(__Method_RoleGrantPermission, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.AuthRoleGrantPermissionRequest, global::Etcdserverpb.AuthRoleGrantPermissionResponse>(serviceImpl.RoleGrantPermission));
+      serviceBinder.AddMethod(__Method_RoleRevokePermission, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Etcdserverpb.AuthRoleRevokePermissionRequest, global::Etcdserverpb.AuthRoleRevokePermissionResponse>(serviceImpl.RoleRevokePermission));
     }
 
   }

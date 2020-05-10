@@ -24,22 +24,24 @@ namespace V3Lockpb {
     static LockReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cgpsb2NrLnByb3RvEgh2M2xvY2twYhoJcnBjLnByb3RvIioKC0xvY2tSZXF1",
-            "ZXN0EgwKBG5hbWUYASABKAwSDQoFbGVhc2UYAiABKAMiSQoMTG9ja1Jlc3Bv",
-            "bnNlEiwKBmhlYWRlchgBIAEoCzIcLmV0Y2RzZXJ2ZXJwYi5SZXNwb25zZUhl",
-            "YWRlchILCgNrZXkYAiABKAwiHAoNVW5sb2NrUmVxdWVzdBILCgNrZXkYASAB",
-            "KAwiPgoOVW5sb2NrUmVzcG9uc2USLAoGaGVhZGVyGAEgASgLMhwuZXRjZHNl",
-            "cnZlcnBiLlJlc3BvbnNlSGVhZGVyMn4KBExvY2sSNwoETG9jaxIVLnYzbG9j",
-            "a3BiLkxvY2tSZXF1ZXN0GhYudjNsb2NrcGIuTG9ja1Jlc3BvbnNlIgASPQoG",
-            "VW5sb2NrEhcudjNsb2NrcGIuVW5sb2NrUmVxdWVzdBoYLnYzbG9ja3BiLlVu",
-            "bG9ja1Jlc3BvbnNlIgBiBnByb3RvMw=="));
+            "Cgpsb2NrLnByb3RvEgh2M2xvY2twYhoKZ29nby5wcm90bxoJcnBjLnByb3Rv",
+            "GhJnYW5ub3RhdGlvbnMucHJvdG8iKgoLTG9ja1JlcXVlc3QSDAoEbmFtZRgB",
+            "IAEoDBINCgVsZWFzZRgCIAEoAyJJCgxMb2NrUmVzcG9uc2USLAoGaGVhZGVy",
+            "GAEgASgLMhwuZXRjZHNlcnZlcnBiLlJlc3BvbnNlSGVhZGVyEgsKA2tleRgC",
+            "IAEoDCIcCg1VbmxvY2tSZXF1ZXN0EgsKA2tleRgBIAEoDCI+Cg5VbmxvY2tS",
+            "ZXNwb25zZRIsCgZoZWFkZXIYASABKAsyHC5ldGNkc2VydmVycGIuUmVzcG9u",
+            "c2VIZWFkZXIysAEKBExvY2sSTwoETG9jaxIVLnYzbG9ja3BiLkxvY2tSZXF1",
+            "ZXN0GhYudjNsb2NrcGIuTG9ja1Jlc3BvbnNlIhiC0+STAhIiDS92My9sb2Nr",
+            "L2xvY2s6ASoSVwoGVW5sb2NrEhcudjNsb2NrcGIuVW5sb2NrUmVxdWVzdBoY",
+            "LnYzbG9ja3BiLlVubG9ja1Jlc3BvbnNlIhqC0+STAhQiDy92My9sb2NrL3Vu",
+            "bG9jazoBKkIIyOIeAdDiHgFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Etcdserverpb.RpcReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::V3Lockpb.LockRequest), global::V3Lockpb.LockRequest.Parser, new[]{ "Name", "Lease" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::V3Lockpb.LockResponse), global::V3Lockpb.LockResponse.Parser, new[]{ "Header", "Key" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::V3Lockpb.UnlockRequest), global::V3Lockpb.UnlockRequest.Parser, new[]{ "Key" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::V3Lockpb.UnlockResponse), global::V3Lockpb.UnlockResponse.Parser, new[]{ "Header" }, null, null, null)
+          new pbr::FileDescriptor[] { global::Gogoproto.GogoReflection.Descriptor, global::Etcdserverpb.RpcReflection.Descriptor, global::Google.Api.GannotationsReflection.Descriptor, },
+          new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::V3Lockpb.LockRequest), global::V3Lockpb.LockRequest.Parser, new[]{ "Name", "Lease" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::V3Lockpb.LockResponse), global::V3Lockpb.LockResponse.Parser, new[]{ "Header", "Key" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::V3Lockpb.UnlockRequest), global::V3Lockpb.UnlockRequest.Parser, new[]{ "Key" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::V3Lockpb.UnlockResponse), global::V3Lockpb.UnlockResponse.Parser, new[]{ "Header" }, null, null, null, null)
           }));
     }
     #endregion
@@ -102,7 +104,7 @@ namespace V3Lockpb {
     /// lease is the ID of the lease that will be attached to ownership of the
     /// lock. If the lease expires or is revoked and currently holds the lock,
     /// the lock is automatically released. Calls to Lock with the same lease will
-    /// be treated as a single acquistion; locking twice with the same lease is a
+    /// be treated as a single acquisition; locking twice with the same lease is a
     /// no-op.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -346,7 +348,7 @@ namespace V3Lockpb {
       }
       if (other.header_ != null) {
         if (header_ == null) {
-          header_ = new global::Etcdserverpb.ResponseHeader();
+          Header = new global::Etcdserverpb.ResponseHeader();
         }
         Header.MergeFrom(other.Header);
       }
@@ -366,9 +368,9 @@ namespace V3Lockpb {
             break;
           case 10: {
             if (header_ == null) {
-              header_ = new global::Etcdserverpb.ResponseHeader();
+              Header = new global::Etcdserverpb.ResponseHeader();
             }
-            input.ReadMessage(header_);
+            input.ReadMessage(Header);
             break;
           }
           case 18: {
@@ -620,7 +622,7 @@ namespace V3Lockpb {
       }
       if (other.header_ != null) {
         if (header_ == null) {
-          header_ = new global::Etcdserverpb.ResponseHeader();
+          Header = new global::Etcdserverpb.ResponseHeader();
         }
         Header.MergeFrom(other.Header);
       }
@@ -637,9 +639,9 @@ namespace V3Lockpb {
             break;
           case 10: {
             if (header_ == null) {
-              header_ = new global::Etcdserverpb.ResponseHeader();
+              Header = new global::Etcdserverpb.ResponseHeader();
             }
-            input.ReadMessage(header_);
+            input.ReadMessage(Header);
             break;
           }
         }
